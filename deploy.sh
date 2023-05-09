@@ -4,4 +4,4 @@ git branch -M master
 git pull origin master
 git add .
 git commit -m "update"
-git push -f origin master
+git push -u origin master
