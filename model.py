@@ -1,4 +1,5 @@
 import numpy
+import numpy as np
 import torch
 import torch.nn as nn
 import config
@@ -29,7 +30,8 @@ class Model(nn.Module):
         self.sigmoid = nn.Sigmoid()
 
     def forward(self, input_x):
-        input_x = torch.clone(input_x.view(self.time_step, self.batch_size, self.in_feature)).detach().float()
+        # 先将输入从 batch_size * time_step * in_feature 转为 time_step * batch_size * in_feature
+        input_x = torch.tensor(input_x.numpy().transpose((1, 0, 2)), dtype=torch.float)
         hid = torch.randn(self.layer_num, self.batch_size, self.hidden_dim, dtype=torch.float)
         cell = torch.randn(self.layer_num, self.batch_size, self.hidden_dim, dtype=torch.float)
         lstm_out, (h_n, h_c) = self.lstm(input_x, (hid, cell))

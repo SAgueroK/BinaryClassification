@@ -46,7 +46,7 @@ def test(test_path):
 
 
 if __name__ == '__main__':
-    TP, FP, FN, TN = test('./model_save/model_0_0.pth')
+    TP, FP, FN, TN = test('./model_save/model_99_2980.pth')
     Accuracy = (TP + TN) / (TP + FP + FN + TN)  # 准确率
     Precision = -1  # 精确率
     Recall = -1  # 召回率
@@ -54,6 +54,6 @@ if __name__ == '__main__':
         Precision = TP / (TP + FP)
     if TP + FN != 0:
         Recall = TP / (TP + FN)
-    print("准确率:", Accuracy)
-    print("精确率:", Precision)
-    print("召回率:", Recall)
+    print("准确率:", Accuracy*100.0, '%')
+    print("精确率:", Precision*100.0, '%')
+    print("召回率:", Recall*100.0, '%')

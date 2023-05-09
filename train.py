@@ -1,5 +1,7 @@
 import os
 
+import numpy
+import numpy as np
 import torch
 import torch.nn as nn
 import torch.utils.data as Data
@@ -66,11 +68,23 @@ def train():
     for epoch in range(start_epochs, epochs):
         loss_sum = 0.  # loss总损失值
         for seq, labels in train_loader:
+            # 将labels转换成-1*output_size的张量
+            labels = torch.clone(labels.view(-1, config.HP.output_size)).detach().float()
+            if numpy.size(seq, 0) < config.HP.batch_size:
+                continue
+            # 下面代码是当剩余数据不够一个batch_size的时候填充成一个batch_size，但是效果不理想
+            # if numpy.size(seq, 0) < config.HP.batch_size:
+            #     supple_batch_size = config.HP.batch_size - np.size(seq, 0)
+            #     seq = torch.tensor(np.append(seq, np.zeros(
+            #         (supple_batch_size, config.HP.time_step, config.HP.in_feature)), 0), dtype=torch.float)
+            #     print(labels.shape)
+            #     labels = torch.tensor(np.append(labels, np.zeros((supple_batch_size, config.HP.output_size)), 0),
+            #                           dtype=torch.float)
+            #     print("填充后的seq:", seq.shape)
+            #     print("填充后的labels:", labels.shape)
             optimizer.zero_grad()
             y_pred = model(seq)  # 得到输出
             # y_pred = torch.round(y_pred)  # 二分类问题使用四舍五入的方法
-            # 将labels转换成1*1的张量
-            labels = torch.clone(labels.view(config.HP.batch_size, config.HP.output_size)).detach().float()
             loss = loss_function(y_pred, labels)  # 计算损失
             loss.backward()
             logger_train.add_scalar('Loss', loss, step)  # 将loss存入log中

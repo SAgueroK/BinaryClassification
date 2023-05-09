@@ -15,10 +15,11 @@ class Hyperparameter:
     data_dir_dev_false = './datasets/dev/false'  # 非用户验证数据地址
     data_dir_test_true = './datasets/test/true'  # 用户测试数据地址
     data_dir_test_false = './datasets/test/false'  # 非用户测试数据地址
-    log_dir = './log'  # 日志地址
+    log_dir_eval = './log/eval'  # 日志地址
+    log_dir_train = './log/train'  # 日志地址
     model_save_dir = './model_save'   # 模型保存地址
     in_feature = 5  # 输入维度
-    time_step = 300  # 时序步
+    time_step = 1000  # 时序步
     hidden_dim = 128  # 隐含层输出维度
     lstm_layer_num = 2  # LSTM层数
     output_size = 1  # 输出维度
@@ -30,9 +31,9 @@ class Hyperparameter:
     # ################################################################
     #                             Experiment
     # ################################################################
-    batch_size = 2
+    batch_size = 10
     init_lr = 1e-3
-    epochs = 10
+    epochs = 100
     verbose_step = 10  # 验证频率
     save_step = 20  # 模型保存频率
 
