@@ -55,7 +55,6 @@ def data_init():
     del_files(filePath_test_true)
     del_files(filePath_test_false)
 
-
     # 获取所有文件
     fileList_x_true = get_all_file_path(filePath_origin_true)
     fileList_x_false = get_all_file_path(filePath_origin_false)
@@ -106,10 +105,22 @@ def get_train_data(path_true, path_false):
     index = 0
     # 获取数据集
     for file in fileList_true:
-        x_data[index] = np.loadtxt(file, delimiter=',')[:time_step]
+        tmp_data = np.loadtxt(file, delimiter=',')
+        # 对数据进行裁剪和填充 形成 tmp_data*in_feature 维度
+        if time_step > np.size(tmp_data, 0):
+            tmp_data = np.append(tmp_data, np.zeros((time_step - np.size(tmp_data, 0), in_feature)), 0)
+        else:
+            tmp_data = tmp_data[:time_step]
+        x_data[index] = tmp_data
         index += 1
     for file in fileList_false:
-        x_data[index] = np.loadtxt(file, delimiter=',')[:time_step]
+        tmp_data = np.loadtxt(file, delimiter=',')
+        # 对数据进行裁剪和填充 形成 tmp_data*in_feature 维度
+        if time_step > np.size(tmp_data, 0):
+            tmp_data = np.append(tmp_data, np.zeros((time_step - np.size(tmp_data, 0), in_feature)), 0)
+        else:
+            tmp_data = tmp_data[:time_step]
+        x_data[index] = tmp_data
         index += 1
     # 设定输出集
     y_data = np.append(np.ones(len(fileList_true)), (np.zeros(len(fileList_false))))
@@ -121,4 +132,3 @@ def get_train_data(path_true, path_false):
 
 if __name__ == '__main__':
     data_init()
-
