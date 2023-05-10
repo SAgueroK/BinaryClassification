@@ -42,7 +42,7 @@ def save_checkpoint(model_, epoch_, optimizer, checkpoint_path):
 
 def train():
     # 加载数训练据
-    train_x, train_y = utils.get_train_data(config.HP.data_dir_train_true, config.HP.data_dir_train_false)
+    train_x, train_y = utils.get_data(config.HP.data_dir_train_true, config.HP.data_dir_train_false, 1)
     train_loader = Data.DataLoader(
         dataset=Data.TensorDataset(train_x, train_y),  # 封装进Data.TensorDataset()类的数据，可以为任意维度
         batch_size=config.HP.batch_size,  # 每块的大小
@@ -50,7 +50,7 @@ def train():
         num_workers=2,  # 多进程（multiprocess）来读数据
     )
     # 加载验证数据
-    dev_x, dev_y = utils.get_train_data(config.HP.data_dir_dev_true, config.HP.data_dir_dev_false)
+    dev_x, dev_y = utils.get_data(config.HP.data_dir_dev_true, config.HP.data_dir_dev_false, 1)
     dev_loader = Data.DataLoader(
         dataset=Data.TensorDataset(dev_x, dev_y),  # 封装进Data.TensorDataset()类的数据，可以为任意维度
         batch_size=config.HP.batch_size,  # 每块的大小

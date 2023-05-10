@@ -11,7 +11,7 @@ def test(test_path):
     model = Model()
     checkpoint = torch.load(test_path)
     model.load_state_dict(checkpoint['model_state_dict'])
-    test_x, test_y = utils.get_train_data(config.HP.data_dir_test_true, config.HP.data_dir_test_false)
+    test_x, test_y = utils.get_data(config.HP.data_dir_test_true, config.HP.data_dir_test_false, 1)
     test_loader = Data.DataLoader(
         dataset=Data.TensorDataset(test_x, test_y),  # 封装进Data.TensorDataset()类的数据，可以为任意维度
         batch_size=config.HP.batch_size,  # 每块的大小

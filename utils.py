@@ -1,5 +1,7 @@
 import os
 import shutil
+import time
+
 import config
 import torch
 import numpy as np
@@ -28,11 +30,14 @@ def copyfile(origin_file, destination_path):  # 复制函数:将origin_file文�
         print("copy %s -> %s" % (origin_file, destination_path + f_name))
 
 
-def get_all_file_path(origin_path):  # 获取origin_path下的所有文件，并且返回文件项目相对路径,例：./datasets/origin/false/2023-05-0812.12.47
-    origin_files = os.listdir(origin_path)
-    for i, file in enumerate(origin_files):
-        origin_files[i] = origin_path + '/' + file
-    return origin_files
+def get_all_file_path(path):  # 获取path下的所有文件，并且返回文件项目相对路径,例：./datasets/origin/false/2023-05-0812.12.47
+    if os.path.exists(path):
+        files = os.listdir(path)
+        for i, file in enumerate(files):
+            files[i] = path + '/' + file
+        return files
+    else:
+        return []
 
 
 # 数据集初始化，将所有初试文件打乱后按6:2:2分配给训练，验证和测试集
@@ -92,7 +97,9 @@ def data_init():
 
 
 # 获取数据集
-def get_train_data(path_true, path_false):
+
+
+def get_data(path_true, path_false, skiprows):
     # 获取文件路径
     fileList_true = get_all_file_path(path_true)
     fileList_false = get_all_file_path(path_false)
@@ -105,7 +112,7 @@ def get_train_data(path_true, path_false):
     index = 0
     # 获取数据集
     for file in fileList_true:
-        tmp_data = np.loadtxt(file, delimiter=',')
+        tmp_data = np.loadtxt(file, delimiter=',', skiprows=skiprows)
         # 对数据进行裁剪和填充 形成 tmp_data*in_feature 维度
         if time_step > np.size(tmp_data, 0):
             tmp_data = np.append(tmp_data, np.zeros((time_step - np.size(tmp_data, 0), in_feature)), 0)
@@ -114,7 +121,7 @@ def get_train_data(path_true, path_false):
         x_data[index] = tmp_data
         index += 1
     for file in fileList_false:
-        tmp_data = np.loadtxt(file, delimiter=',')
+        tmp_data = np.loadtxt(file, delimiter=',', skiprows=skiprows)
         # 对数据进行裁剪和填充 形成 tmp_data*in_feature 维度
         if time_step > np.size(tmp_data, 0):
             tmp_data = np.append(tmp_data, np.zeros((time_step - np.size(tmp_data, 0), in_feature)), 0)
@@ -130,5 +137,6 @@ def get_train_data(path_true, path_false):
     return x_data, y_data
 
 
-if __name__ == '__main__':
-    data_init()
+def save_data(data, path):
+    path += '/' + time.strftime('%Y-%m-%d-%H.%M.%S', time.localtime())
+    np.savetxt(path, data, fmt='%.6f', delimiter=',')
